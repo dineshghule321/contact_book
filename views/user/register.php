@@ -6,4 +6,7 @@
  * Time: 5:49 PM
  */
 echo "welcome";
+$mng = new MongoDB\Driver\Manager(); // Driver Object created
+echo "<pre>";
+print_r($mng);
 ?>
