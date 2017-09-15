@@ -51,10 +51,6 @@ if(!empty($_SESSION)){
     </fieldset>
 </form>
 </div>
-<?php
-unset($_SESSION["loginError"]);
-require_once "../layout/footer.php";
-?>
 <script>
 
 
@@ -71,3 +67,8 @@ require_once "../layout/footer.php";
 
     });
 </script>
+<?php
+unset($_SESSION["loginError"]);
+require_once "../layout/footer.php";
+?>
+

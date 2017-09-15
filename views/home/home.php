@@ -15,7 +15,7 @@ require_once "../layout/checkSession.php";
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="email">Name:</label>
-                            <input type="email" class="form-control" id="email">
+                            <input type="email" class="form-control" id="email" placeholder="Search by Contact Name">
                         </div>
 
 
@@ -23,7 +23,7 @@ require_once "../layout/checkSession.php";
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="pwd">Phone Number:</label>
-                            <input type="password" class="form-control" id="pwd">
+                            <input type="password" class="form-control" id="pwd" placeholder="Search by Phone Number">
                         </div>
 
 
@@ -130,11 +130,11 @@ require_once "../layout/checkSession.php";
         </div>
     </div>
 </div>
-<?php
-
-require_once "../layout/footer.php";
-?>
 <script>
 
 
 </script>
+<?php
+require_once "../layout/footer.php";
+?>
+
