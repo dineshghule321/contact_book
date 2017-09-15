@@ -8,7 +8,7 @@ if($_SESSION["email_handle"]!="" || $_SESSION["email"]!="")
     header("Location:{$urlLogin}");
 }else
 {
-    $urlLogin=$rootUrl."views/user/register.php";
+    $urlLogin=$rootUrl."views/user/login.php";
     header("Location:{$urlLogin}");
 }
 

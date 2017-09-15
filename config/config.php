@@ -1,5 +1,8 @@
 <?php
-
+if(!isset($_SESSION))
+{
+    session_start();
+}
 $rootUrl = "http://localhost/contact_book/"; //Static
 
 $docRoot = $_SERVER['DOCUMENT_ROOT'] . "/contact_book/";
@@ -16,7 +19,7 @@ $rootUrlJs = "{$rootUrl}assets/js/";
 $rootUrlCss = "{$rootUrl}assets/css/";
 
 $docViews = "{$docRoot}views/";
-
+$rootView="{$rootUrl}views/";
 /****************************************************/
 define("MAILGUN_API_KEY", "key-2b8f2419e616db09b1297ba51d7cc770");
 define("MAILGUN_DOMAIN", "searchtrade.com");
