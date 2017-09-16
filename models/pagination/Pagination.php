@@ -8,14 +8,22 @@
  */
 class Pagination
 {
+    /**
+     * @var DB|string
+     */
     public $connection = "";
+
 
     function __construct()
     {
-        $this->connection = new DB("dbSystem", 'FALSE');
+            $this->connection = new DB("dbSystem", 'FALSE');
     }
 
     /**
+     * buildFilterQuery($filtersArr) input as array
+     *
+     * this function used to generate filter query based on filters given as input over UI.(Browser)
+     *
      * @param $filtersArr
      * @return string
      *
@@ -44,16 +52,6 @@ class Pagination
      * 8] for MATCH AGAINST input is $filtersArr["columnName"]=array("MATCH",$value1,$value2);
      *    example $filtersArr["id"]=array("MATCH","(head, body)","('some words' IN BOOLEAN MODE)");
      */
-
-    function contains_array($array)
-    {
-        foreach ($array as $value) {
-            if (is_array($value)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     function buildFilterQuery($filtersArr)
     {
@@ -106,62 +104,95 @@ class Pagination
             {
                 $buildFilters .= $tempFilter;
             }
-            $buildFilters .= " 1=1";
+            $buildFilters= preg_replace('/\W\w+\s*(\W*)$/', '$1', $buildFilters);
+            //$buildFilters .= " 1=1";
         }
 
         return $buildFilters;
     }
 
+    /**
+     * used to check array contains another array
+     * @param $array
+     * @return bool
+     */
+    function contains_array($array)
+    {
+        foreach ($array as $value) {
+            if (is_array($value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * used to handle match against query
+     * @param $val
+     * @param $buildFilters
+     * @param $key
+     * @return string
+     */
     function handle_MATCH($val, $buildFilters, $key)
     {
-        if ($val[1] != "" && $val[2] != "") {
-            if (gettype($val[1]) == "integer" || gettype($val[1]) == "int") {
-                $buildFilters .= "{$key} MATCH {$val[1]} AGAINST {$val[2]} AND ";
-            }
-
-            if (gettype($val[1]) == "double" || gettype($val[1]) == "float") {
-                $buildFilters .= "{$key} MATCH {$val[1]} AGAINST {$val[2]} AND ";
-            }
-
-            if (gettype($val[1]) == "string") {
-                $buildFilters .= "{$key} MATCH {$val[1]} AGAINST {$val[2]} AND ";
+        if ($val[1] != "") {
+            if($val[2] != "") {
+                if (gettype($val[1]) == "string") {
+                    $buildFilters .= " MATCH ({$val[1]}) AGAINST ('{$val[2]}' IN BOOLEAN MODE) AND ";
+                }
             }
         }
+        //echo $buildFilters;die;
         return $buildFilters;
     }
 
+    /**
+     * used to handle between query
+     * @param $val
+     * @param $buildFilters
+     * @param $key
+     * @return string
+     */
     function handle_BETWEEN($val, $buildFilters, $key)
     {
-        if ($val[1] != "" && $val[2] != "") {
-            if (gettype($val[1]) == "integer" || gettype($val[1]) == "int") {
-                $buildFilters .= "{$key} BETWEEN ({$val[1]} AND {$val[2]}) AND ";
-            }
-
-            if (gettype($val[1]) == "double" || gettype($val[1]) == "float") {
-                $buildFilters .= "{$key} BETWEEN ({$val[1]} AND {$val[2]}) AND ";
-            }
-
-            if (gettype($val[1]) == "string") {
-                $buildFilters .= "{$key} BETWEEN ({$val[1]} AND {$val[2]}) AND ";
+        if ($val[1] != "") {
+            if($val[2] != "") {
+                if (gettype($val[1]) == "string") {
+                    $buildFilters .= "{$key} BETWEEN ('{$val[1]}' AND '{$val[2]}') AND ";
+                }
             }
         }
         return $buildFilters;
     }
 
+    /**
+     * used to handle single operator query
+     * @param $val
+     * @param $buildFilters
+     * @param $key
+     * @param $operator
+     * @return string
+     */
     function handle_SingleOperator($val, $buildFilters, $key, $operator)
     {
+        if($operator=="like")
+        {
+            $gate="OR";
+        }else{
+            $gate="AND";
+        }
         if ($val != "") {
 
             if (gettype($val) == "integer" || gettype($val) == "int") {
-                $buildFilters .= "{$key} {$operator} {$val} AND ";
+                $buildFilters .= "{$key} {$operator} {$val} {$gate} ";
             }
 
             if (gettype($val) == "double" || gettype($val) == "float") {
-                $buildFilters .= "{$key} {$operator} {$val} AND ";
+                $buildFilters .= "{$key} {$operator} {$val} {$gate} ";
             }
 
             if (gettype($val) == "string") {
-                $buildFilters .= "{$key} {$operator} {$val} AND ";
+                $buildFilters .= "{$key} {$operator} '{$val}' {$gate} ";
             }
         }
 
@@ -169,6 +200,13 @@ class Pagination
     }
 
 
+    /**
+     * getTableCount($tableName, $filtersArr)
+     * this function used to get table data count by filters applied
+     * @param $tableName
+     * @param $filtersArr
+     * @return array
+     */
     function getTableCount($tableName, $filtersArr) //get table rows count
     {
 
@@ -183,6 +221,18 @@ class Pagination
 
     }
 
+    /**
+     * getTableData($tableName, $filtersArr, $page_position, $item_per_page, $orderBy, $columnNames = "*")
+     *
+     * this function used to get table data by filters applied
+     * @param $tableName
+     * @param $filtersArr
+     * @param $page_position
+     * @param $item_per_page
+     * @param $orderBy
+     * @param string $columnNames
+     * @return array
+     */
     function getTableData($tableName, $filtersArr, $page_position, $item_per_page, $orderBy, $columnNames = "*")
     {
         $filter = $this->buildFilterQuery($filtersArr);
@@ -197,6 +247,12 @@ class Pagination
 
     }
 
+    /**
+     * getColumnNames($columnNames)
+     * generates column names block to add in query from input array
+     * @param $columnNames
+     * @return string
+     */
     function getColumnNames($columnNames)
     {
         if (gettype($columnNames) == "array") {
@@ -214,16 +270,27 @@ class Pagination
         return $columnNames;
     }
 
+    /**
+     *
+     * getPaginationDataForTable($limit, $tableName, $filtersArr, $orderBy, $columns = "*")
+     * this function calculate pagination counts and fetch pagination data
+     * @param $limit
+     * @param $tableName
+     * @param $filtersArr
+     * @param $orderBy
+     * @param string $columns
+     * @return array
+     */
     function getPaginationDataForTable($limit, $tableName, $filtersArr, $orderBy, $columns = "*")
     {
 
         $resultsData = array();
-//Get page number from Ajax
+        //Get page number from Ajax Post Details
         if (isset($_POST["pageno"])) {
             $page_number = (int)filter_var($_POST["pageno"], FILTER_SANITIZE_NUMBER_INT, FILTER_FLAG_STRIP_HIGH); //filter number
             if (!is_numeric($page_number)) {
-                die('Invalid page number!');
-            } //incase of invalid page number
+                die('Invalid page number!');//incase of invalid page number
+            }
         } else {
             $page_number = 1; //if there's no page number, set it to 1
         }
@@ -234,7 +301,7 @@ class Pagination
         $get_total_rows = $this->getTableCount($tableName, $filtersArr)["data"]["result"][0]["count"];
         $total_pages = ceil($get_total_rows / $item_per_page);
 
-//position of records
+        //position of records
         $page_position = (($page_number - 1) * $item_per_page);
         $lastpage = ceil($total_pages);
 
@@ -250,7 +317,7 @@ class Pagination
 
             $total_pages = ceil($get_total_rows / $item_per_page);
 
-//position of records
+            //position of records
             $page_position = (($page_number - 1) * $item_per_page);
             $lastpage = ceil($total_pages);
             $checkStr = substr($page_position, 0, 1);
@@ -272,6 +339,14 @@ class Pagination
         return $resultsData;
     }
 
+    /**
+     * buildPageParameters($filtersArr)
+     *
+     * this function used to add page parameters to JS pagination function
+     * that generate pagination UI and Links
+     * @param $filtersArr
+     * @return string
+     */
     function buildPageParameters($filtersArr)
     {
         $buildFilters = "";
@@ -281,11 +356,24 @@ class Pagination
         return rtrim($buildFilters, ",");
     }
 
-    function getPaginationDataJs($lastpage, $pageno, $limit, $filtersArr, $Fname)
+    /**
+     *
+     * getPaginationDataJs($lastpage, $pageno, $limit, $filtersArr, $functionName)
+     *
+     * this function generates pagination UI to append data in HTML
+     *
+     * @param $lastpage
+     * @param $pageno
+     * @param $limit
+     * @param $filtersArr
+     * @param $functionName
+     * @param $idForLimit
+     */
+    function getPaginationDataJs($lastpage, $pageno, $limit, $filtersArr, $functionName,$idForLimit="LimitedResult")
     {
         ?>
         <span class="pull-left recordCountsShow-styled-select"> Show
-            <select id="LimitedResult">
+            <select id="<?= $idForLimit; ?>">
                  <option value="5" <?php if ($limit == 5) {
                      echo "selected";
                  } ?>> 5 </option>
@@ -319,14 +407,14 @@ class Pagination
             $pagenum = 1;
             $filtersArr["pageNumber"] = $pagenum;
             $query = $this->buildPageParameters($filtersArr);
-            print('<li><a href="#" onclick=' . $Fname . '(' . $query . ')>&laquo;</a></li>');
+            print('<li><a href="#" onclick=' . $functionName . '(' . $query . ')>&laquo;</a></li>');
         }
 
         if ($pageno > 1) {
             $pagenumber = $pageno - 1;
             $filtersArr["pageNumber"] = $pagenumber;
             $query = $this->buildPageParameters($filtersArr);
-            print('<li><a href="#" onclick=' . $Fname . '(' . $query . ')>Previous</a></li>');
+            print('<li><a href="#" onclick=' . $functionName . '(' . $query . ')>Previous</a></li>');
         }
 
         if ($pageno == 1) {
@@ -347,21 +435,21 @@ class Pagination
                 $pagenumber = $i;
                 $filtersArr["pageNumber"] = $pagenumber;
                 $query = $this->buildPageParameters($filtersArr);
-                print('<li><a href="#" onclick=' . $Fname . '(' . $query . ')>' . $i . '</a></li>');
+                print('<li><a href="#" onclick=' . $functionName . '(' . $query . ')>' . $i . '</a></li>');
             }
         }
         if ($pageno < $lastpage) {
             $pagenumber = $pageno + 1;
             $filtersArr["pageNumber"] = $pagenumber;
             $query = $this->buildPageParameters($filtersArr);
-            print('<li><a href="#" onclick=' . $Fname . '(' . $query . ')>Next</a></li>');
+            print('<li><a href="#" onclick=' . $functionName . '(' . $query . ')>Next</a></li>');
 
         }
 
         if ($pageno != $lastpage) {
             $filtersArr["pageNumber"] = $lastpage;
             $query = $this->buildPageParameters($filtersArr);
-            print('<li><a href="#" onclick=' . $Fname . '(' . $query . ')>&raquo;</a></li>');
+            print('<li><a href="#" onclick=' . $functionName . '(' . $query . ')>&raquo;</a></li>');
         }
         echo '</ul>';
         echo '</div>';

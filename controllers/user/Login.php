@@ -45,6 +45,7 @@ if(!empty($_POST))
 
     $newdata = $result["data"]["result"]["0"];
     $newemail = $newdata["email_address"];
+    $userid = $newdata["user_id"];
     $newepass = $newdata["password_hash"];
     $name = ucfirst($newdata["first_name"]) . " " . ucfirst($newdata["last_name"]);
     $profilepic = $newdata["profile_pic"];
@@ -72,6 +73,7 @@ if(!empty($_POST))
 
         $_SESSION['userLogin'] = "1";
         $_SESSION['userEmail'] = $newemail;
+        $_SESSION['userId'] = $userid;
 
         unset($_SESSION["loginError"]);
         header("location:{$rootUrl}views/home/home.php");

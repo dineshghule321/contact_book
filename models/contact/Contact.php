@@ -1,0 +1,192 @@
+<?php
+
+/**
+ * Created by PhpStorm.
+ * User: dinesh
+ * Date: 5/9/17
+ * Time: 5:59 PM
+ */
+class Contact
+{
+    public $connection = "";
+
+    function __construct()
+    {
+        $this->connection = new DB("dbSystem", 'FALSE');
+    }
+
+    function submitContactData($email, $fname, $mname, $lname, $MobileNo, $landlineNo, $notes, $photo_path, $user_id)
+    {
+        $insertArray = array(
+            "email_address" => $email,
+            "first_name" => $fname,
+            "middle_name" => $mname,
+            "last_name" => $lname,
+            "landline_number" => $landlineNo,
+            "moblie_number" => $MobileNo,
+            "notes" => $notes,
+            "photo_path" => $photo_path,
+            "user_id" => $user_id,
+        );
+        return $this->connection->insert("contacts", $insertArray);
+    }
+
+    function validatePhone($string)
+    {
+        $numbersOnly = preg_replace("[^0-9]", "", $string);
+        $numberOfDigits = strlen($numbersOnly);
+        if ($numberOfDigits == 7) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function deleteContact($contact_id)
+    {
+        return $this->connection->delete("contacts", "id=$contact_id");
+    }
+
+    function updateContact($contact_id, $firstname, $middle_name, $lastname, $mobileno, $landLineNo, $email, $note,$file_name)
+    {
+        $adminArr = array(
+            "first_name" => $firstname,
+            "middle_name" => $middle_name,
+            "last_name" => $lastname,
+            "moblie_number" => $mobileno,
+            "landline_number" => $landLineNo,
+            "email_address" => $email,
+            "notes" => $note
+        );
+        if($file_name!="")
+        {
+            $adminArr["photo_path"]=$file_name;
+        }
+        return $this->connection->update("contacts", $adminArr, array("id" => "{$contact_id}"));
+    }
+
+    function commonValidations($email, $fname, $lname, $moblie_number, $landline_number,$fileId)
+    {
+        if ($email != "") {
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $returnArr["errCode"] = "1";
+                $returnArr["errMsg"] = "Please Enter Valid email Address.";
+                echo json_encode($returnArr, true);
+                exit;
+            }
+        }
+
+        if ($fname == "") {
+            $returnArr["errCode"] = "1";
+            $returnArr["errMsg"] = "First Name can not be blank.";
+            echo json_encode($returnArr, true);
+            exit;
+        }
+
+        if ($lname == "") {
+            $returnArr["errCode"] = "1";
+            $returnArr["errMsg"] = "Last Name can not be blank.";
+            echo json_encode($returnArr, true);
+            exit;
+        }
+
+        if ($moblie_number != "") {
+            $valMob = preg_match('/^[0-9]{10}+$/', $moblie_number);
+            if (!$valMob) {
+                $returnArr["errCode"] = "1";
+                $returnArr["errMsg"] = "Please Enter Valid Mobile Number.";
+                echo json_encode($returnArr, true);
+                exit;
+            }
+
+        }
+
+        if ($landline_number != "") {
+            $valMob = $this->validatePhone($landline_number);
+            if (!$valMob) {
+                $returnArr["errCode"] = "1";
+                $returnArr["errMsg"] = "Please Enter Valid Telephone Number.";
+                echo json_encode($returnArr, true);
+                exit;
+            }
+
+        }
+
+        global $docRoot;
+        if ($_FILES["{$fileId}"]["name"]!="") {
+            $file_tmp_name = $_FILES["tmp_name"];
+            $file_Size = $_FILES["size"];
+            $file_name = $_FILES["name"];
+
+
+            $file_ext = strtolower(end(explode('.', $_FILES["{$fileId}"]['name'])));
+            $file_name = strtotime(date("d-m-y h:i:s a")) . "." . $file_ext;
+
+            $target_dir = $docRoot . "assets/images/";
+
+            $target_file = $target_dir . basename($_FILES["{$fileId}"]["name"]);
+
+
+            $uploadOk = 1;
+            $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+
+            $target_file = $target_dir . $file_name;
+            // Check if image file is a actual image or fake image
+            $check = getimagesize($_FILES["{$fileId}"]["tmp_name"]);
+            if ($check !== false) {
+                $uploadOk = 1;
+            } else {
+                $msg = "File is not an image.Please upload valid Image file.";
+                $uploadOk = 0;
+                $returnArr["errCode"] = "1";
+                $returnArr["errMsg"] = $msg;
+                echo json_encode($returnArr, true);
+                exit;
+            }
+
+            // Check if file already exists
+            if (file_exists($target_file)) {
+                $msg = "Sorry, file already exists.";
+                $uploadOk = 0;
+                $returnArr["errCode"] = "1";
+                $returnArr["errMsg"] = $msg;
+                echo json_encode($returnArr, true);
+                exit;
+            }
+
+            // Check file size
+            if ($_FILES["{$fileId}"]["size"] > 500000) {
+                $msg = "Sorry, your file is too large.";
+                $uploadOk = 0;
+                $returnArr["errCode"] = "1";
+                $returnArr["errMsg"] = $msg;
+                echo json_encode($returnArr, true);
+                exit;
+            }
+
+            // Allow certain file formats
+            if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+                && $imageFileType != "gif"
+            ) {
+                $msg = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+                $uploadOk = 0;
+                $returnArr["errCode"] = "1";
+                $returnArr["errMsg"] = $msg;
+                echo json_encode($returnArr, true);
+                exit;
+            }
+        }
+
+        if ($_FILES["{$fileId}"]["name"]!="") {
+            if (move_uploaded_file($_FILES["{$fileId}"]["tmp_name"], $target_file)) {
+            } else {
+                $msg = "Sorry, there was an error uploading your file.Please try again";
+                $returnArr["errCode"] = "1";
+                $returnArr["errMsg"] = $msg;
+                echo json_encode($returnArr, true);
+                exit;
+            }
+        }
+    }
+
+}
