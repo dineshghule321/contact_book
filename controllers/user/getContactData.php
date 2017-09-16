@@ -1,4 +1,12 @@
 <?php
+
+/*
+ *----------------------------------------------------------------------------------------------------
+ * Contact controller used for Pagination of Contact Book
+ * Here based on user input controller gives response as a filtered data from table
+ *----------------------------------------------------------------------------------------------------
+ */
+
 session_start();
 
 //start config
@@ -11,8 +19,6 @@ $orderBy="id";
 $filtersArr=array();
 $resultsData=array();
 
-//$filtersArr["bug_status"]=cleanQuery($_POST["bugStatus"]);
-//$filtersArr["created_by"]=cleanQuery($_POST["bugType"]);
 
 $search_email=cleanQuery($_POST["search_email"]);
 if($search_email!="")
@@ -104,6 +110,7 @@ $Pagination->getPaginationDataJs($lastpage, $page_number,$limit,$filtersArrJ,"ge
     });
     function updateContact(id,f_name,m_name,l_name,moblie_number,landline_number,email_address,notes)
     {
+        $("#err_frmSubmit_response_edit").html("");
         $("#edit_id").val(id);
         $("#edit_first_name").val(f_name);
         $("#edit_middle_name").val(m_name);

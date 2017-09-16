@@ -8,13 +8,34 @@
  */
 class Contact
 {
+    /**
+     * @var DB|string
+     */
     public $connection = "";
 
+    /**
+     * Contact constructor.
+     */
     function __construct()
     {
         $this->connection = new DB("dbSystem", 'FALSE');
     }
 
+    /**
+     * ----------------------------------------------------------------------------------------
+     * This function insert/save contact details in contact database
+     * ----------------------------------------------------------------------------------------
+     * @param $email
+     * @param $fname
+     * @param $mname
+     * @param $lname
+     * @param $MobileNo
+     * @param $landlineNo
+     * @param $notes
+     * @param $photo_path
+     * @param $user_id
+     * @return array
+     */
     function submitContactData($email, $fname, $mname, $lname, $MobileNo, $landlineNo, $notes, $photo_path, $user_id)
     {
         $insertArray = array(
@@ -31,6 +52,13 @@ class Contact
         return $this->connection->insert("contacts", $insertArray);
     }
 
+    /**
+     * ----------------------------------------------------------------------------------------
+     *This function used to validate land line Phone
+     * ----------------------------------------------------------------------------------------
+     * @param $string
+     * @return bool
+     */
     function validatePhone($string)
     {
         $numbersOnly = preg_replace("[^0-9]", "", $string);
@@ -42,12 +70,34 @@ class Contact
         }
     }
 
+    /**
+     * ----------------------------------------------------------------------------------------
+     *This function used to delete contact from database
+     * ----------------------------------------------------------------------------------------
+     * @param $contact_id
+     * @return array
+     */
     function deleteContact($contact_id)
     {
         return $this->connection->delete("contacts", "id=$contact_id");
     }
 
-    function updateContact($contact_id, $firstname, $middle_name, $lastname, $mobileno, $landLineNo, $email, $note,$file_name)
+    /**
+     * ----------------------------------------------------------------------------------------
+     *This function used to update contact details
+     * ----------------------------------------------------------------------------------------
+     * @param $contact_id
+     * @param $firstname
+     * @param $middle_name
+     * @param $lastname
+     * @param $mobileno
+     * @param $landLineNo
+     * @param $email
+     * @param $note
+     * @param $file_name
+     * @return array
+     */
+    function updateContact($contact_id, $firstname, $middle_name, $lastname, $mobileno, $landLineNo, $email, $note, $file_name)
     {
         $adminArr = array(
             "first_name" => $firstname,
@@ -65,7 +115,18 @@ class Contact
         return $this->connection->update("contacts", $adminArr, array("id" => "{$contact_id}"));
     }
 
-    function commonValidations($email, $fname, $lname, $moblie_number, $landline_number,$fileId)
+    /**
+     * ----------------------------------------------------------------------------------------
+     *This function used to apply common server side validations on contact app
+     * ----------------------------------------------------------------------------------------
+     * @param $email
+     * @param $fname
+     * @param $lname
+     * @param $moblie_number
+     * @param $landline_number
+     * @param $fileId
+     */
+    function commonValidations($email, $fname, $lname, $moblie_number, $landline_number, $fileId)
     {
         if ($email != "") {
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

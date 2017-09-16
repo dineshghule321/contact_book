@@ -1,13 +1,24 @@
 <?php
 
 
+/**
+ * Class DB
+ */
 class DB
 {
+    /**
+     * DB Host Array
+     * @var array
+     */
     private $dbHost=array(
         "db_host_primary" => "localhost",
         "db_host_secondary" => "localhost"
     );
 
+    /**
+     * System Database Array
+     * @var array
+     */
     private $dbSystem = array(
         "db_name" => "contact_book",
         "db_user" => "dbuser",
@@ -15,9 +26,21 @@ class DB
         "db_port" => "3306"
     );
 
+
+    /**
+     * @var string
+     */
     public $connection = "";
+    /**
+     * @var string
+     */
     public $errorMap = "";
 
+    /**
+     * this function fetch database credential for particular database by name of case
+     * @param $database
+     * @return mixed
+     */
     public function getDatabaseCredential($database)
     {
         $db_array["host"] = $this->dbHost["db_host_primary"];
@@ -38,6 +61,12 @@ class DB
         }
     }
 
+    /**
+     * constructor initialise database connection
+     * DB constructor.
+     * @param string $database
+     * @param string $is_persiatant
+     */
     function __construct($database = "NULL", $is_persiatant = "NULL")
     {
         ini_set('display_errors', 0);
@@ -48,16 +77,29 @@ class DB
         $this->connection = $conn["data"];
     }
 
+    /**
+     * this magic method don't allow object cloning
+     * @return bool
+     */
     private function __clone()
     {
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function __wakeup()
     {
         return false;
     }
 
+    /**
+     * this function connect to database using pdo and return connection object
+     * @param $credential
+     * @param $is_persiatant
+     * @return array
+     */
     private function getDBConnection($credential, $is_persiatant)
     {
         $host = $credential["host"]; //get credential out of array
@@ -89,6 +131,12 @@ class DB
 
     }
 
+    /**
+     * function used to run query on database object
+     * @param $query
+     * @param array $parameters
+     * @return array
+     */
     public function query($query, array $parameters = array())
     {
         $return_array = array();
@@ -132,6 +180,19 @@ class DB
         return $return_array;
     }
 
+    /**
+     * this function used to fetch data from database
+     * @param $table_name
+     * @param array $columns
+     * @param string $where
+     * @param string $limit
+     * @param string $offset
+     * @param array $orderBy
+     * @param array $groupBy
+     * @param string $having
+     * @param string $join
+     * @return array
+     */
     public function select($table_name, array $columns = array(), $where = '', $limit = '', $offset = '', array $orderBy = array(), array $groupBy = array(), $having = '', $join = '')
     {
         /*$columns  array of columns name
@@ -220,6 +281,12 @@ class DB
     }
 
 
+    /**
+     * this function used to insert data in database
+     * @param $table_name
+     * @param array $values
+     * @return array
+     */
     function insert($table_name, array $values)
     {
         if (isset($values) && !empty($values) && is_array($values)) {
@@ -244,6 +311,13 @@ class DB
         }
     }
 
+    /**
+     * this function used to update data in database
+     * @param $table_name
+     * @param array $values
+     * @param $where
+     * @return array
+     */
     function update($table_name, array $values, $where)
     {
         if (!empty($values) && isset($values) && is_array($values) && !empty($where) && isset($where)) {
@@ -288,6 +362,12 @@ class DB
     }
 
 
+    /**
+     * this function used to delete data in database
+     * @param $table_name
+     * @param $where
+     * @return array
+     */
     function delete($table_name, $where)
     {
         if (!empty($where) && isset($where)) {
@@ -318,6 +398,11 @@ class DB
         }
     }
 
+    /**
+     * this function used to bind query parameters
+     * @param $values
+     * @return bool|string
+     */
     function get_type_for_bind_param($values)
     {
         $type_string = "";
@@ -337,21 +422,36 @@ class DB
         return $type_string;
     }
 
+    /**
+     * start transaction
+     * @return mixed
+     */
     public function beginTransaction()
     {
         return $this->connection->beginTransaction();
     }
 
+    /**
+     * commit transaction
+     * @return mixed
+     */
     public function commit()
     {
         return $this->connection->commit();
     }
 
+    /**
+     * rollback transaction
+     * @return mixed
+     */
     public function rollback()
     {
         return $this->connection->rollback();
     }
 
+    /**
+     * destroy the connection object
+     */
     public function __destruct()
     {
         $this->connection = "";

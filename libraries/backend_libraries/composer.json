@@ -1,6 +1,0 @@
-{
-    "require": {
-        "mailgun/mailgun-php": "~1.7.1",
-        "dompdf/dompdf": "^0.8.0"
-    }
-}

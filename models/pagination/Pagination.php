@@ -20,10 +20,11 @@ class Pagination
     }
 
     /**
+     * ---------------------------------------------------------------------------------------------
      * buildFilterQuery($filtersArr) input as array
      *
      * this function used to generate filter query based on filters given as input over UI.(Browser)
-     *
+     * ---------------------------------------------------------------------------------------------
      * @param $filtersArr
      * @return string
      *
@@ -112,7 +113,9 @@ class Pagination
     }
 
     /**
+     * ---------------------------------------------------------------------------------------------
      * used to check array contains another array
+     * ---------------------------------------------------------------------------------------------
      * @param $array
      * @return bool
      */
@@ -127,7 +130,9 @@ class Pagination
     }
 
     /**
+     * ---------------------------------------------------------------------------------------------
      * used to handle match against query
+     * ---------------------------------------------------------------------------------------------
      * @param $val
      * @param $buildFilters
      * @param $key
@@ -147,7 +152,9 @@ class Pagination
     }
 
     /**
+     * ---------------------------------------------------------------------------------------------
      * used to handle between query
+     * ---------------------------------------------------------------------------------------------
      * @param $val
      * @param $buildFilters
      * @param $key
@@ -166,7 +173,9 @@ class Pagination
     }
 
     /**
+     * ---------------------------------------------------------------------------------------------
      * used to handle single operator query
+     * ---------------------------------------------------------------------------------------------
      * @param $val
      * @param $buildFilters
      * @param $key
@@ -201,8 +210,10 @@ class Pagination
 
 
     /**
+     * ---------------------------------------------------------------------------------------------
      * getTableCount($tableName, $filtersArr)
      * this function used to get table data count by filters applied
+     * ---------------------------------------------------------------------------------------------
      * @param $tableName
      * @param $filtersArr
      * @return array
@@ -222,9 +233,10 @@ class Pagination
     }
 
     /**
+     * ---------------------------------------------------------------------------------------------
      * getTableData($tableName, $filtersArr, $page_position, $item_per_page, $orderBy, $columnNames = "*")
-     *
      * this function used to get table data by filters applied
+     * ---------------------------------------------------------------------------------------------
      * @param $tableName
      * @param $filtersArr
      * @param $page_position
@@ -248,8 +260,10 @@ class Pagination
     }
 
     /**
+     * ---------------------------------------------------------------------------------------------
      * getColumnNames($columnNames)
      * generates column names block to add in query from input array
+     * ---------------------------------------------------------------------------------------------
      * @param $columnNames
      * @return string
      */
@@ -271,9 +285,10 @@ class Pagination
     }
 
     /**
-     *
+     *---------------------------------------------------------------------------------------------
      * getPaginationDataForTable($limit, $tableName, $filtersArr, $orderBy, $columns = "*")
      * this function calculate pagination counts and fetch pagination data
+     * ---------------------------------------------------------------------------------------------
      * @param $limit
      * @param $tableName
      * @param $filtersArr
@@ -340,10 +355,12 @@ class Pagination
     }
 
     /**
+     * ---------------------------------------------------------------------------------------------
      * buildPageParameters($filtersArr)
      *
      * this function used to add page parameters to JS pagination function
      * that generate pagination UI and Links
+     * ---------------------------------------------------------------------------------------------
      * @param $filtersArr
      * @return string
      */
@@ -357,11 +374,11 @@ class Pagination
     }
 
     /**
-     *
+     *---------------------------------------------------------------------------------------------
      * getPaginationDataJs($lastpage, $pageno, $limit, $filtersArr, $functionName)
      *
      * this function generates pagination UI to append data in HTML
-     *
+     *---------------------------------------------------------------------------------------------
      * @param $lastpage
      * @param $pageno
      * @param $limit

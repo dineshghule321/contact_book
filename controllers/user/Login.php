@@ -1,4 +1,12 @@
 <?php
+
+/*
+ *----------------------------------------------------------------------------------------------------
+ * Login controller used for Login  of User  Contact Book
+ * Here based on user input controller check is valid user if valid set session and redirect to main
+ * page Else redirect to same page with an error.
+ *----------------------------------------------------------------------------------------------------
+ */
 session_start();
 require_once("../../config/config.php");
 require_once("../../models/user/User.php");

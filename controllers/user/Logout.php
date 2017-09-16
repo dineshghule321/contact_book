@@ -1,10 +1,10 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: dinesh
- * Date: 6/9/17
- * Time: 1:33 PM
+/*
+ *----------------------------------------------------------------------------------------------------
+ * Logout controller used for Logout  of User  Contact Book
+ * controller destroy session and redirect to login page
+ *----------------------------------------------------------------------------------------------------
  */
 
 session_start();

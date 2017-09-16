@@ -1,11 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: trilok
- * Date: 28/11/16
- * Time: 7:07 PM
- */
 
+/**
+ * ----------------------------------------------------------------------------------------
+ * this function used for triple encryption of MD5 and SHA512
+ * ----------------------------------------------------------------------------------------
+ * @param $hash
+ * @return string
+ */
 function sha1Md5DualEncryption($hash)
 {
     $salt = sha1(md5($hash));
@@ -13,6 +14,13 @@ function sha1Md5DualEncryption($hash)
     return $hash;
 }
 
+/**
+ * ----------------------------------------------------------------------------------------
+ * this function used to generate random string up to 15 characters
+ * ----------------------------------------------------------------------------------------
+ * @param int $length
+ * @return string
+ */
 function generateRandomString($length = 15)
 {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

@@ -10,6 +10,16 @@ session_start();
 require_once("../../config/config.php");
 require_once("../../models/contact/Contact.php");
 
+/*
+ *----------------------------------------------------------------------------------------------------
+ * Contact controller used for CRUD operation of Contact Book
+ * here are 3 cases
+ * 1]submit_new_contact
+ * 2]delete_contact
+ * 3]update_contact
+ * according to user input controller do operation and gives response back to user
+ *----------------------------------------------------------------------------------------------------
+ */
 $returnArr = array();
 if ($_SESSION["userEmail"] != "") {
     if (!empty($_POST)) {

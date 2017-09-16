@@ -17,24 +17,7 @@ function set_error_stack($error_code, $message = "", $data = [])
         -2 => "nonce error",
         -1 => "",
         1 => "Error in creating database connection.",
-        2 => "Error in query execution.",
-        3 => "Failed to send email.",
-        4 => "Mandatory field not found",
-        5 => "Error in checking blocked domains",
-        6 => "This domain is blocked",
-        7 => "Please fill the captcha",
-        8 => "Invalid Captcha",
-        9 => "File not found",
-        10 => "Error: Unable to read from file",
-        11 => "Error: Unable to write into file",
-        12 => "Error: Unable to create file",
-        13 => "Your daily signup limt exceed on this ip",
-        14 => "Your lifetime signup limit exceed on this ip",
-        15 => "Full name must be within 50 characters long",
-        16 => "Registration Failed",
-        17 => "Sending registration email failed",
-        18 => "Error: Fetching setting details"
-
+        2 => "Error in query execution."
     );
 
     if ($error_code == -1) {

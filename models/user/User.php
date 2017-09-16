@@ -15,26 +15,65 @@ class User
         $this->connection = new DB("dbSystem", 'FALSE');
     }
 
+    /**
+     * ----------------------------------------------------------------------------------------
+     * function used to validate user login
+     * ----------------------------------------------------------------------------------------
+     * @param $email
+     * @param $hash
+     * @return array
+     */
     function validateLogin($email, $hash)
     {
         return $this->connection->select("users", array(), array("email_address" => "{$email}", "password_hash" => "{$hash}"));
     }
 
-    function isAdminExists($email)
+    /**
+     *----------------------------------------------------------------------------------------
+     * check user exists
+     * ----------------------------------------------------------------------------------------
+     * @param $email
+     * @return array
+     */
+    function isUSerExists($email)
     {
         return $this->connection->select("users", array(), array("email_address" => "{$email}", "status" => 1));
     }
 
+    /**
+     * ----------------------------------------------------------------------------------------
+     *change user password
+     * ----------------------------------------------------------------------------------------
+     * @param $email
+     * @param $newp
+     * @return array
+     */
     function changePassword($email, $newp)
     {
         return $this->connection->update("users", array("password_hash" => $newp), array("email_address" => "{$email}"));
     }
 
+    /**
+     * ----------------------------------------------------------------------------------------
+     *Update user auth token
+     * ----------------------------------------------------------------------------------------
+     * @param $email
+     * @param $token
+     * @return array
+     */
     function updateToken($email, $token)
     {
         return $this->connection->update("users", array("auth_token" => $token), array("email_address" => "{$email}"));
     }
 
+    /**
+     * ----------------------------------------------------------------------------------------
+     * activate User
+     * ----------------------------------------------------------------------------------------
+     * @param $email
+     * @param $hash
+     * @return array
+     */
     function activateUser($email, $hash)
     {
         $hash = sha1Md5DualEncryption($hash);
@@ -42,7 +81,15 @@ class User
         return $this->connection->update("users", array("password_hash" => $hash, "status" => 1), array("email_address" => "{$email}"));
     }
 
-    function changeAdminProfilePic($email, $imageName)
+    /**
+     * ----------------------------------------------------------------------------------------
+     * change user profile picture
+     * ----------------------------------------------------------------------------------------
+     * @param $email
+     * @param $imageName
+     * @return array
+     */
+    function changeUserProfilePic($email, $imageName)
     {
         global $docRoot;
         $result = $this->connection->update("users", array("profile_pic_path" => $imageName), array("email_address" => "{$email}"));
@@ -68,6 +115,16 @@ class User
 
     }
 
+    /**
+     * ----------------------------------------------------------------------------------------
+     * update User details
+     * ----------------------------------------------------------------------------------------
+     * @param $email
+     * @param $fname
+     * @param $lname
+     * @param $address
+     * @return array
+     */
     function updateUser($email, $fname, $lname, $address)
     {
         return $this->connection->update("users", array("first_name" => $fname, "last_name" => $lname, "address" => $address), array("email_address" => "{$email}"));
