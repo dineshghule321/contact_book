@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50719
 File Encoding         : 65001
 
-Date: 2017-09-15 18:37:55
+Date: 2017-09-16 16:48:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,19 +29,24 @@ CREATE TABLE `contacts` (
   `landline_number` varchar(255) DEFAULT NULL,
   `email_address` varchar(255) DEFAULT NULL,
   `notes` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `user_id` int(22) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `contacts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of contacts
 -- ----------------------------
+INSERT INTO `contacts` VALUES ('29', 'dfgdf', 'dfgdfg', 'dfgfdgdfg', '3443245555', '1474110429.jpg', '3242355', 're@grr.la', 'dfgdfgdfg', '1');
+INSERT INTO `contacts` VALUES ('30', 'sadasd', '', 'sadasdas', '1111111111', '1474110442.jpg', '1111111', '', 'sadasdsdsda', '1');
 
 -- ----------------------------
 -- Table structure for users
 -- ----------------------------
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-  `id` int(22) NOT NULL AUTO_INCREMENT,
+  `user_id` int(22) NOT NULL AUTO_INCREMENT,
   `email_address` varchar(255) DEFAULT NULL,
   `first_name` varchar(255) DEFAULT NULL,
   `last_name` varchar(255) DEFAULT NULL,
@@ -51,7 +56,7 @@ CREATE TABLE `users` (
   `creation_date` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `profile_pic_path` varchar(255) DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
